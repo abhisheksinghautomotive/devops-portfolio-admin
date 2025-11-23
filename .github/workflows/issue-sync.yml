@@ -1,4 +1,4 @@
-name: "Issue → Notion Sync"
+name: Issue → Notion Sync
 
 on:
   workflow_call:
@@ -25,7 +25,15 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
+      # Checkout the CHILD repository (that triggered the workflow)
       - uses: actions/checkout@v4
+
+      # Checkout the CENTRAL admin repo that contains issue_to_notion.py
+      - name: Checkout admin repo
+        uses: actions/checkout@v4
+        with:
+          repository: abhisheksinghautomotive/devops-portfolio-admin
+          path: admin_repo
 
       - uses: actions/setup-python@v4
         with:
@@ -35,16 +43,18 @@ jobs:
           python -m pip install --upgrade pip
           pip install python-dotenv requests
 
-      - run: |
-          echo "${{ inputs.event_json_b64 }}" | base64 --decode > event.json
+      - name: Save GitHub event to file
+        run: |
+          echo '${{ inputs.event_json }}' > event.json
 
-      - run: |
-          python issue-import/issue_to_notion.py \
-            --event-path event.json \
-            --repo "${{ inputs.repo }}"
+      - name: Run Notion sync
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
           PROJECT_MAP_JSON: ${{ secrets.PROJECT_MAP_JSON }}
           NOTION_PEOPLE_MAP_JSON: ${{ secrets.NOTION_PEOPLE_MAP_JSON }}
           DRY_RUN: ${{ secrets.DRY_RUN || '0' }}
+        run: |
+          python admin_repo/issue-import/issue_to_notion.py \
+            --event-path event.json \
+            --repo "${{ inputs.repo }}"
