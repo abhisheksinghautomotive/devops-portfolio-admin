@@ -1,4 +1,4 @@
-name: "Issue -> Notion sync"
+name: "Issue → Notion Sync"
 
 on:
   workflow_call:
@@ -22,32 +22,29 @@ on:
         required: false
 
 jobs:
-  sync_single_issue:
+  sync:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout central repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: "3.9"
 
-      - name: Install dependencies
-        run: |
+      - run: |
           python -m pip install --upgrade pip
           pip install python-dotenv requests
 
-      - name: Write event JSON to disk
-        run: |
-          printf '%s' "${{ inputs.event_json }}" > /tmp/gh_event.json
+      - run: |
+          printf '%s' "${{ inputs.event_json }}" > event.json
 
-      - name: Run central issue-to-notion handler
+      - run: |
+          python issue-import/issue_to_notion.py \
+            --event-path event.json \
+            --repo "${{ inputs.repo }}"
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
           PROJECT_MAP_JSON: ${{ secrets.PROJECT_MAP_JSON }}
           NOTION_PEOPLE_MAP_JSON: ${{ secrets.NOTION_PEOPLE_MAP_JSON }}
           DRY_RUN: ${{ secrets.DRY_RUN || '0' }}
-        run: |
-          python issue-import/issue_to_notion.py --event-path /tmp/gh_event.json --repo "${{ inputs.repo }}"
