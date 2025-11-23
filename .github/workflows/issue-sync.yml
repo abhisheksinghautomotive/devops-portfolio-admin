@@ -1,12 +1,9 @@
-name: Issue → Notion Sync
+name: Sync GitHub Issues to Notion
 
 on:
   workflow_call:
     inputs:
-      repo:
-        required: true
-        type: string
-      event_json:
+      event_path:
         required: true
         type: string
     secrets:
@@ -14,47 +11,31 @@ on:
         required: true
       NOTION_DATABASE_ID:
         required: true
-      PROJECT_MAP_JSON:
-        required: false
-      NOTION_PEOPLE_MAP_JSON:
-        required: false
-      DRY_RUN:
-        required: false
 
 jobs:
-  sync:
+  sync_issue_to_notion:
     runs-on: ubuntu-latest
-    steps:
-      # Checkout the CHILD repository (that triggered the workflow)
-      - uses: actions/checkout@v4
 
-      # Checkout the CENTRAL admin repo that contains issue_to_notion.py
+    steps:
       - name: Checkout admin repo
         uses: actions/checkout@v4
         with:
-          repository: abhisheksinghautomotive/devops-portfolio-admin
+          repository: ${{ github.repository_owner }}/devops-portfolio-admin
           path: admin_repo
 
-      - uses: actions/setup-python@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.9"
+          python-version: '3.9'
 
-      - run: |
-          python -m pip install --upgrade pip
-          pip install python-dotenv requests
-
-      - name: Save GitHub event to file
+      - name: Install dependencies
         run: |
-          echo '${{ inputs.event_json }}' > event.json
+          python -m pip install --upgrade pip
+          pip install requests python-dotenv
 
-      - name: Run Notion sync
+      - name: Run Notion Sync
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
-          PROJECT_MAP_JSON: ${{ secrets.PROJECT_MAP_JSON }}
-          NOTION_PEOPLE_MAP_JSON: ${{ secrets.NOTION_PEOPLE_MAP_JSON }}
-          DRY_RUN: ${{ secrets.DRY_RUN || '0' }}
         run: |
-          python admin_repo/issue-import/issue_to_notion.py \
-            --event-path event.json \
-            --repo "${{ inputs.repo }}"
+          python admin_repo/issue-import/issue_to_notion.py "${{ inputs.event_path }}"
