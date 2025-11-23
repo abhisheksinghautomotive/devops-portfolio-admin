@@ -1,0 +1,35 @@
+name: Sync issue -> Notion (single-issue)
+
+on:
+  issues:
+    types: [opened, edited, labeled, unlabeled, closed, reopened, milestoned, demilestoned]
+
+permissions:
+  issues: read
+  contents: read
+
+jobs:
+  sync_issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install python-dotenv requests
+
+      - name: Run issue_to_notion handler
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+          PROJECT_MAP_JSON: ${{ secrets.PROJECT_MAP_JSON }}            # optional
+          NOTION_PEOPLE_MAP_JSON: ${{ secrets.NOTION_PEOPLE_MAP_JSON }}# optional
+          DRY_RUN: "0"                                                # set "1" to dry-run
+        run: |
+          mkdir -p .github/actions/issue-to-notion
+          # ensure your handler is present at the path below in repo
+          python .github/actions/issue-to-notion/issue_to_notion.py --event-path "$GITHUB_EVENT_PATH" --repo "${{ github.repository }}"
