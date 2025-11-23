@@ -36,7 +36,7 @@ jobs:
           pip install python-dotenv requests
 
       - run: |
-          printf '%s' "${{ inputs.event_json }}" > event.json
+          echo "${{ inputs.event_json_b64 }}" | base64 --decode > event.json
 
       - run: |
           python issue-import/issue_to_notion.py \
