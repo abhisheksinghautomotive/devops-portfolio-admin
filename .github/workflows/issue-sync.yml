@@ -1,17 +1,33 @@
-name: Sync issue -> Notion (single-issue)
+name: "Issue -> Notion sync"
 
 on:
-  issues:
-    types: [opened, edited, labeled, unlabeled, closed, reopened, milestoned, demilestoned]
-
-permissions:
-  issues: read
-  contents: read
+  workflow_call:
+    inputs:
+      repo:
+        required: true
+        type: string
+      event_json:
+        required: true
+        type: string
+    secrets:
+      NOTION_TOKEN:
+        required: true
+      NOTION_DATABASE_ID:
+        required: true
+      PROJECT_MAP_JSON:
+        required: false
+      NOTION_PEOPLE_MAP_JSON:
+        required: false
+      DRY_RUN:
+        required: false
 
 jobs:
-  sync_issue:
+  sync_single_issue:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout central repo
+        uses: actions/checkout@v4
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
@@ -22,14 +38,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install python-dotenv requests
 
-      - name: Run issue_to_notion handler
+      - name: Write event JSON to disk
+        run: |
+          printf '%s' "${{ inputs.event_json }}" > /tmp/gh_event.json
+
+      - name: Run central issue-to-notion handler
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
-          PROJECT_MAP_JSON: ${{ secrets.PROJECT_MAP_JSON }}            # optional
-          NOTION_PEOPLE_MAP_JSON: ${{ secrets.NOTION_PEOPLE_MAP_JSON }}# optional
-          DRY_RUN: "0"                                                # set "1" to dry-run
+          PROJECT_MAP_JSON: ${{ secrets.PROJECT_MAP_JSON }}
+          NOTION_PEOPLE_MAP_JSON: ${{ secrets.NOTION_PEOPLE_MAP_JSON }}
+          DRY_RUN: ${{ secrets.DRY_RUN || '0' }}
         run: |
-          mkdir -p .github/actions/issue-to-notion
-          # ensure your handler is present at the path below in repo
-          python .github/actions/issue-to-notion/issue_to_notion.py --event-path "$GITHUB_EVENT_PATH" --repo "${{ github.repository }}"
+          python issue-import/issue_to_notion.py --event-path /tmp/gh_event.json --repo "${{ inputs.repo }}"
