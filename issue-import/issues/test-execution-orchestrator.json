@@ -1,0 +1,260 @@
+{
+  "issues": [
+    {
+      "title": "Reservation & Execution API (FastAPI) Implementation",
+      "body": "Implement REST endpoints for reservations and executions using FastAPI.\n\n**Endpoints**:\n- `POST /reservations` — create reservation\n- `GET /reservations/{id}` — fetch reservation\n- `POST /executions` — create execution request\n- `GET /executions/{id}` — fetch execution\n\n**Acceptance Criteria**:\n- Endpoints implemented and validated with Pydantic schemas.\n- Every API response includes `correlation_id` header/field.\n- OpenAPI schema available at `/docs`.\n- Unit tests for each endpoint (happy & validation paths).\n\n**Notes**: keep controllers thin; business logic in service layer.",
+      "repo": "test-execution-orchestrator",
+      "labels": ["type:feature", "priority:high", "sprint:2"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 2",
+      "estimate": "3d",
+      "status": "open",
+      "sprint": "Sprint 2",
+      "meta": {
+        "task_id": "T2-01",
+        "component": "api",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Define Execution and Queue Task Data Models",
+      "body": "Create python data models for Execution, Task, TaskStatus and related types.\n\n**Acceptance Criteria**:\n- Data classes (dataclasses or pydantic) exist under `api/models`.\n- Task types enumerated: `provision`, `run`, `collect`, `teardown`.\n- Serialization/deserialization unit tests present.\n- Models imported consistently across API, scheduler, worker.\n",
+      "repo": "test-execution-orchestrator",
+      "labels": ["type:feature", "priority:high", "sprint:2"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 2",
+      "estimate": "1d",
+      "status": "open",
+      "sprint": "Sprint 2",
+      "meta": {
+        "task_id": "T2-02",
+        "component": "api",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Lightweight Scheduler (Policy Engine)",
+      "body": "Implement a scheduler that evaluates reservations and creates tasks based on a simple FIFO policy that is extensible for priorities and tags.\n\n**Acceptance Criteria**:\n- Scheduler accepts pending executions and selects an available bench (mock).\n- Enqueues tasks into queue abstraction for provision/run/collect/teardown.\n- Unit tests validate FIFO behavior and task creation.\n- Scheduler code is modular and documented for later policy extensions.\n",
+      "repo": "test-execution-orchestrator",
+      "labels": ["type:feature", "priority:high", "sprint:2"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 2",
+      "estimate": "2d",
+      "status": "open",
+      "sprint": "Sprint 2",
+      "meta": {
+        "task_id": "T2-03",
+        "component": "scheduler",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Mock Queue Abstraction (In-Memory)",
+      "body": "Provide an in-memory queue abstraction that supports at-least-once semantics and retry metadata for Sprint 2 use.\n\n**Acceptance Criteria**:\n- Queue provides `push`, `pop`, `ack`, and `requeue` operations.\n- Retry metadata (attempts, next_attempt_ts) tracked per task.\n- Used by scheduler and worker in all local flows.\n- Unit tests for delivery and retry behavior.\n",
+      "repo": "test-execution-orchestrator",
+      "labels": ["type:infra", "priority:high", "sprint:2"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 2",
+      "estimate": "1.5d",
+      "status": "open",
+      "sprint": "Sprint 2",
+      "meta": {
+        "task_id": "T2-04",
+        "component": "queue",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Runner Adapter Interface (Strategy Pattern)",
+      "body": "Design and implement the abstract runner adapter interface used by workers to provision, run tests, collect artifacts, and teardown.\n\n**Acceptance Criteria**:\n- Interface methods: `provision(bench_spec)`, `run_test(handle, payload)`, `collect_artifacts(handle)`, `teardown(handle)`.\n- Base class documented with expected return types and error behavior.\n- Unit tests assert contract compliance (mock implementations can be validated against tests).\n",
+      "repo": "test-execution-orchestrator",
+      "labels": ["type:feature", "priority:high", "sprint:2"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 2",
+      "estimate": "1d",
+      "status": "open",
+      "sprint": "Sprint 2",
+      "meta": {
+        "task_id": "T2-05",
+        "component": "adapters",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Mock Runner Implementation (Local/SIL Simulation)",
+      "body": "Create a mock runner that simulates bench provisioning and test execution for local development and CI.\n\n**Acceptance Criteria**:\n- Mock simulates deterministic execution (configurable pass/fail), produces fake logs/artifacts.\n- Implements runner adapter interface.\n- Used in worker integration tests and end-to-end flows.\n- Documentation on how to configure deterministic outcomes.\n",
+      "repo": "test-execution-orchestrator",
+      "labels": ["type:feature", "priority:high", "sprint:2"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 2",
+      "estimate": "1.5d",
+      "status": "open",
+      "sprint": "Sprint 2",
+      "meta": {
+        "task_id": "T2-06",
+        "component": "adapters",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Worker Lifecycle: Task Consumer & Executor",
+      "body": "Implement the worker process that consumes tasks from the queue and drives adapter calls for provision/run/collect/teardown.\n\n**Acceptance Criteria**:\n- Worker consumes tasks and updates execution state in persistence.\n- Implements retry/backoff using task metadata and routes to DLQ on repeated failures.\n- Logs include correlation_id and task context.\n- Integration tests covering success and retry scenarios with mock runner.\n",
+      "repo": "test-execution-orchestrator",
+      "labels": ["type:feature", "priority:high", "sprint:2"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 2",
+      "estimate": "2d",
+      "status": "open",
+      "sprint": "Sprint 2",
+      "meta": {
+        "task_id": "T2-07",
+        "component": "worker",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Structured Logging & Error Handling Primitives",
+      "body": "Establish a unified structured logging format and error-handling utilities for API and workers.\n\n**Acceptance Criteria**:\n- JSON log schema with `timestamp`, `level`, `component`, `correlation_id`, `message`, `context`.\n- Error utilities map exceptions to HTTP responses with consistent error codes.\n- Logs emitted in API and worker flows; unit tests validate log output structure.\n",
+      "repo": "test-execution-orchestrator",
+      "labels": ["type:infra", "priority:high", "sprint:2"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 2",
+      "estimate": "1d",
+      "status": "open",
+      "sprint": "Sprint 2",
+      "meta": {
+        "task_id": "T2-08",
+        "component": "infra",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Basic Persistence Layer (In-Memory / SQLite)",
+      "body": "Implement a minimal persistence layer to store benches, reservations, and executions suitable for local dev and CI.\n\n**Acceptance Criteria**:\n- CRUD operations for reservations and executions implemented.\n- Persistence interface abstracted for later swap to Postgres/DynamoDB.\n- Basic optimistic concurrency placeholder implemented.\n- Unit tests cover store operations.\n",
+      "repo": "test-execution-orchestrator",
+      "labels": ["type:feature", "priority:medium", "sprint:2"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 2",
+      "estimate": "1.5d",
+      "status": "open",
+      "sprint": "Sprint 2",
+      "meta": {
+        "task_id": "T2-09",
+        "component": "api",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Initial CLI (Typer) with reserve/run/status",
+      "body": "Create a developer CLI using Typer with basic commands to interact with the API.\n\n**Acceptance Criteria**:\n- Commands implemented: `reserve`, `run`, `status`.\n- CLI authenticates using a local token cache and respects exit codes.\n- CLI implemented in `cli/` and referenced in README.\n- Integration tests validate CLI -> API interactions against local dev server.\n",
+      "repo": "test-execution-orchestrator",
+      "labels": ["type:feature", "priority:medium", "sprint:2"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 2",
+      "estimate": "1.5d",
+      "status": "open",
+      "sprint": "Sprint 2",
+      "meta": {
+        "task_id": "T2-10",
+        "component": "cli",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Unit Test Suite & Coverage Setup",
+      "body": "Create pytest-based tests for API, scheduler, worker, and adapters; enforce minimum coverage for Sprint 2 scope.\n\n**Acceptance Criteria**:\n- Tests for happy and error paths exist for core modules.\n- Coverage threshold ≥ 60% for Sprint 2 changed files.\n- CI fails when tests or coverage rules fail.\n",
+      "repo": "test-execution-orchestrator",
+      "labels": ["type:test", "priority:high", "sprint:2"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 2",
+      "estimate": "1.5d",
+      "status": "open",
+      "sprint": "Sprint 2",
+      "meta": {
+        "task_id": "T2-11",
+        "component": "tests",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Integrate Bandit, ruff, and mypy into CI",
+      "body": "Add security and quality gates to GitHub Actions: Bandit for security, ruff for linting, mypy for type checking.\n\n**Acceptance Criteria**:\n- Bandit scan executes; high severity findings fail CI.\n- ruff linting step included; style violations fail CI.\n- mypy run enabled in strict-ish mode for new code; type failures fail CI.\n",
+      "repo": "test-execution-orchestrator",
+      "labels": ["type:security", "priority:high", "sprint:2"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 2",
+      "estimate": "0.5d",
+      "status": "open",
+      "sprint": "Sprint 2",
+      "meta": {
+        "task_id": "T2-12",
+        "component": "infra",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "GitHub Actions CI Pipeline for Sprint 2",
+      "body": "Create a GitHub Actions workflow that runs lint, type-check, tests, and security scans on PRs and pushes to main.\n\n**Acceptance Criteria**:\n- Workflow triggers on PRs and pushes to `main`.\n- Steps: setup -> ruff -> mypy -> pytest -> bandit.\n- Caching of dependencies implemented to speed up runs.\n- Status badge added to README.\n",
+      "repo": "test-execution-orchestrator",
+      "labels": ["type:infra", "priority:high", "sprint:2"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 2",
+      "estimate": "1d",
+      "status": "open",
+      "sprint": "Sprint 2",
+      "meta": {
+        "task_id": "T2-13",
+        "component": "infra",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "ADR: Queue Abstraction (Local -> Remote Migration Path)",
+      "body": "Create an ADR documenting why a local queue abstraction is used in Sprint 2 and the migration plan to a remote queue (SQS/RabbitMQ) in Sprint 3.\n\n**Acceptance Criteria**:\n- ADR created in `docs/ADRs/ADR-queue-abstraction.md`.\n- Contains rationale, trade-offs, migration steps, and acceptance criteria for the remote queue.\n- Reviewed and approved by the team.\n",
+      "repo": "test-execution-orchestrator",
+      "labels": ["type:adr", "priority:medium", "sprint:2"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 2",
+      "estimate": "0.5d",
+      "status": "open",
+      "sprint": "Sprint 2",
+      "meta": {
+        "task_id": "T2-14",
+        "component": "docs",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "API Contracts & Component Boundary Documentation",
+      "body": "Document API contracts, component responsibilities, and runner adapter specification in `docs/`.\n\n**Acceptance Criteria**:\n- `docs/API_CONTRACTS.md` with request/response examples for reservation and execution endpoints.\n- `docs/COMPONENTS.md` describing scheduler, worker, adapters, and persistence boundaries.\n- Adapter spec includes method signatures and expected behaviors.\n",
+      "repo": "test-execution-orchestrator",
+      "labels": ["type:docs", "priority:medium", "sprint:2"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 2",
+      "estimate": "0.75d",
+      "status": "open",
+      "sprint": "Sprint 2",
+      "meta": {
+        "task_id": "T2-15",
+        "component": "docs",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Integration Test: End-to-End Mock Execution (reserve → run → collect)",
+      "body": "Create an automated integration test that runs the full flow using only local mocks: reserve a bench, scheduler enqueues tasks, worker runs mock runner, artifacts collected.\n\n**Acceptance Criteria**:\n- End-to-end test in `tests/integration/` that validates state transitions and artifact URI availability.\n- Test runs in CI and passes deterministically.\n- Logs assert correlation_id propagation across components.\n",
+      "repo": "test-execution-orchestrator",
+      "labels": ["type:test", "priority:medium", "sprint:2"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 2",
+      "estimate": "1d",
+      "status": "open",
+      "sprint": "Sprint 2",
+      "meta": {
+        "task_id": "T2-16",
+        "component": "tests",
+        "created_from": "chatgpt"
+      }
+    }
+  ]
+}

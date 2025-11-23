@@ -1,0 +1,292 @@
+{
+  "issues": [
+    {
+      "title": "Terraform backend: S3 bucket and DynamoDB locking",
+      "body": "Create and configure the Terraform remote backend for the repo.\n\n**Scope**\n- Provision S3 bucket with versioning and server-side encryption\n- Provision DynamoDB table for state locking\n- Provide sample `backend.tf` configuration for envs/dev\n\n**Acceptance Criteria**\n- S3 bucket exists with versioning and KMS encryption\n- DynamoDB table exists and used for `terraform init` locking\n- `terraform init` succeeds against remote backend from `envs/dev`\n- Outputs document backend usage and required IAM permissions",
+      "repo": "infra-bench-platform",
+      "labels": ["type:infra", "priority:high", "sprint:3"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 3",
+      "estimate": "",
+      "status": "open",
+      "sprint": "Sprint 3",
+      "meta": {
+        "task_id": "T3-01",
+        "component": "backend",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "VPC module: multi-AZ subnets, routing, IGW and NAT",
+      "body": "Implement a reusable Terraform module to create the baseline VPC.\n\n**Scope**\n- VPC with CIDR configurable\n- Public and private subnets across 3 AZs\n- Internet Gateway, NAT Gateway(s) and route tables\n- Outputs for subnet IDs, route tables, and VPC ID\n\n**Acceptance Criteria**\n- Module creates VPC, public/private subnets in 3 AZs\n- Route tables and NAT/IGW are configured correctly\n- Outputs exposed and validated via `terraform plan`\n- Module documented with example usage",
+      "repo": "infra-bench-platform",
+      "labels": ["type:infra", "priority:high", "sprint:3"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 3",
+      "estimate": "",
+      "status": "open",
+      "sprint": "Sprint 3",
+      "meta": {
+        "task_id": "T3-02",
+        "component": "networking",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "VPC endpoints: S3, DynamoDB, SSM, ECR",
+      "body": "Add VPC Endpoint support to the VPC module to ensure private access to AWS services.\n\n**Scope**\n- Interface/Gateway endpoints for S3, DynamoDB, SSM, and ECR\n- Endpoint policies or SG rules restricting access\n\n**Acceptance Criteria**\n- Endpoints created and routable from private subnets\n- Benches do not require public internet for these services\n- Endpoints documented and their IDs output",
+      "repo": "infra-bench-platform",
+      "labels": ["type:feature", "priority:high", "sprint:3"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 3",
+      "estimate": "",
+      "status": "open",
+      "sprint": "Sprint 3",
+      "meta": {
+        "task_id": "T3-03",
+        "component": "networking",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Security groups for bench hosts and EFS mount targets",
+      "body": "Design and provision security groups to enforce least-privilege networking for compute and storage.\n\n**Scope**\n- SG for bench hosts allowing only required ingress (NFS from internal, SSM, internal app ports)\n- SG for EFS mount targets restricting NFS to bench SG\n- Document allowed ports and ownership\n\n**Acceptance Criteria**\n- No public ingress rules present for bench hosts\n- EFS mount SG allows only NFS from bench hosts\n- SG IDs output by module and referenced by compute/EFS modules",
+      "repo": "infra-bench-platform",
+      "labels": ["type:infra", "priority:high", "sprint:3"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 3",
+      "estimate": "",
+      "status": "open",
+      "sprint": "Sprint 3",
+      "meta": {
+        "task_id": "T3-04",
+        "component": "security",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "IAM roles and policies for bench, orchestrator agent and logging",
+      "body": "Create least-privilege IAM roles and policies required by bench instances and orchestrator agents.\n\n**Scope**\n- Instance role and instance profile for bench hosts\n- Roles/policies scoped for S3, DynamoDB, EFS, SSM access\n- Logging/CloudWatch permissions separated\n\n**Acceptance Criteria**\n- Roles created with policy documents (no wildcards)\n- Role ARNs available as outputs\n- Document policy boundaries and escalation path",
+      "repo": "infra-bench-platform",
+      "labels": ["type:feature", "priority:high", "sprint:3"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 3",
+      "estimate": "",
+      "status": "open",
+      "sprint": "Sprint 3",
+      "meta": {
+        "task_id": "T3-05",
+        "component": "iam",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "EFS module: shared workspace with KMS encryption",
+      "body": "Provision EFS for shared workspace with multi-AZ mount targets and encryption.\n\n**Scope**\n- EFS file system with encryption using KMS\n- Mount targets in private subnets for each AZ\n- Security group and mountpoint outputs\n\n**Acceptance Criteria**\n- EFS created with KMS encryption enabled\n- Mount targets provisioned in each private subnet\n- Security group restricts NFS to bench hosts\n- Mount target IDs and DNS mount point output",
+      "repo": "infra-bench-platform",
+      "labels": ["type:infra", "priority:high", "sprint:3"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 3",
+      "estimate": "",
+      "status": "open",
+      "sprint": "Sprint 3",
+      "meta": {
+        "task_id": "T3-06",
+        "component": "storage",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Bench compute module: Launch Template, ASG, warm pool",
+      "body": "Implement the bench compute module to create Launch Template and Auto Scaling Group with warm pool support.\n\n**Scope**\n- Launch template with user-data placeholders\n- ASG configured with min, max, desired values\n- Warm pool enabled for fast provisioning\n- Required tags applied\n\n**Acceptance Criteria**\n- Launch template outputs ID and AMI reference\n- ASG created and warm pool enabled\n- Tag schema enforced on ASG and instances\n- ASG scaling events visible in CloudWatch",
+      "repo": "infra-bench-platform",
+      "labels": ["type:feature", "priority:high", "sprint:3"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 3",
+      "estimate": "",
+      "status": "open",
+      "sprint": "Sprint 3",
+      "meta": {
+        "task_id": "T3-07",
+        "component": "compute",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Bootstrap script or AMI: bench agent and EFS mount",
+      "body": "Provide either a pre-baked AMI or a user-data bootstrap script to install bench agent and mount EFS.\n\n**Scope**\n- Script installs required packages, bench agent, and mounts EFS\n- Writes minimal health/log markers for smoke tests\n\n**Acceptance Criteria**\n- Script parameterized and usable by Launch Template\n- Verified ability to mount EFS and start agent (smoke logs)\n- Documented configuration variables",
+      "repo": "infra-bench-platform",
+      "labels": ["type:feature", "priority:medium", "sprint:3"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 3",
+      "estimate": "",
+      "status": "open",
+      "sprint": "Sprint 3",
+      "meta": {
+        "task_id": "T3-08",
+        "component": "compute",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Module scaffolding and envs/dev root composition",
+      "body": "Create the Terraform module layout and the `envs/dev` root configuration composing modules.\n\n**Scope**\n- `modules/` contains vpc, sg, iam, efs, asg, s3-backend\n- `envs/dev` uses the modules with example variables\n\n**Acceptance Criteria**\n- Module folder structure present in repo\n- `envs/dev` can run `terraform init` and `terraform plan` (backend configured)\n- Module READMEs stubbed",
+      "repo": "infra-bench-platform",
+      "labels": ["type:infra", "priority:medium", "sprint:3"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 3",
+      "estimate": "",
+      "status": "open",
+      "sprint": "Sprint 3",
+      "meta": {
+        "task_id": "T3-09",
+        "component": "repo",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Tagging module and enforcement of standard tags",
+      "body": "Implement a common tagging approach and enforce tags via module locals and policy checks.\n\n**Scope**\n- Centralized tag locals and helper module\n- Ensure all modules consume tags input\n- Integrate tag checks in CI (checkov)\n\n**Acceptance Criteria**\n- Tagging local exists and is referenced by modules\n- Resources created in sprint include required tags (env, owner, service, cost-center)\n- Checkov policy validates tags on PRs",
+      "repo": "infra-bench-platform",
+      "labels": ["type:infra", "priority:medium", "sprint:3"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 3",
+      "estimate": "",
+      "status": "open",
+      "sprint": "Sprint 3",
+      "meta": {
+        "task_id": "T3-10",
+        "component": "governance",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "GitHub Actions workflow: Terraform fmt/validate/tflint/checkov on PR",
+      "body": "Create a GitHub Actions workflow that validates Terraform changes on pull requests.\n\n**Scope**\n- Steps: terraform fmt, terraform validate, tflint, checkov\n- Fail CI on formatting or security violations\n- Post plan summary to PR (plan-only, no apply)\n\n**Acceptance Criteria**\n- Workflow runs on PRs and failures block merging\n- Logs show results for each tool\n- No secrets or long-lived keys required (use OIDC later)",
+      "repo": "infra-bench-platform",
+      "labels": ["type:security", "priority:high", "sprint:3"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 3",
+      "estimate": "",
+      "status": "open",
+      "sprint": "Sprint 3",
+      "meta": {
+        "task_id": "T3-11",
+        "component": "ci",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Enforce SSM Session Manager for instance access (no SSH)",
+      "body": "Configure instance profiles and policies to enable SSM Session Manager and prevent SSH access.\n\n**Scope**\n- Attach SSM managed policy to bench instance role\n- Security group and AMI/userdata ensure SSH port closed\n\n**Acceptance Criteria**\n- Instances can be accessed via SSM only\n- No SSH keypairs created or used for bench instances\n- Documentation for operator access via SSM",
+      "repo": "infra-bench-platform",
+      "labels": ["type:feature", "priority:medium", "sprint:3"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 3",
+      "estimate": "",
+      "status": "open",
+      "sprint": "Sprint 3",
+      "meta": {
+        "task_id": "T3-12",
+        "component": "access",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Dev smoke test: launch instance, mount EFS, verify SSM connectivity",
+      "body": "Perform a smoke test in the dev environment to validate core functionality.\n\n**Scope**\n- Trigger ASG to launch instance\n- Verify EFS mount from instance\n- Verify SSM session connection\n- Verify DynamoDB read/write from instance with IAM role\n\n**Acceptance Criteria**\n- Instance in ASG reaches running state\n- `df -h` shows EFS mount (or equivalent) in smoke logs\n- Successful SSM session established\n- DynamoDB write/read test succeeds",
+      "repo": "infra-bench-platform",
+      "labels": ["type:test", "priority:medium", "sprint:3"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 3",
+      "estimate": "",
+      "status": "open",
+      "sprint": "Sprint 3",
+      "meta": {
+        "task_id": "T3-13",
+        "component": "test",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "ADR: EC2 vs EKS decision for bench compute",
+      "body": "Document the decision rationale for choosing EC2 or EKS for bench compute in Sprint 3.\n\n**Scope**\n- Short ADR describing trade-offs, costs, operational complexity\n- Recommendation for Sprint 3 (start with EC2) and migration path to EKS\n\n**Acceptance Criteria**\n- ADR committed under `ADRs/ADR-010.md`\n- Team agrees and ADR references follow-up work for EKS evaluation",
+      "repo": "infra-bench-platform",
+      "labels": ["type:adr", "priority:medium", "sprint:3"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 3",
+      "estimate": "",
+      "status": "open",
+      "sprint": "Sprint 3",
+      "meta": {
+        "task_id": "T3-14",
+        "component": "docs",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Add CI security scans: Checkov and Trivy integration",
+      "body": "Integrate Checkov for IaC scanning and Trivy for image scanning within the CI pipeline.\n\n**Scope**\n- Checkov runs against Terraform plan\n- Trivy scan placeholder for future AMI/container images\n- Block PRs on critical/high findings\n\n**Acceptance Criteria**\n- Checkov runs and reports on PRs\n- Trivy step added (image scanning deferred if images not present)\n- Critical findings fail CI, with remediation guidance in logs",
+      "repo": "infra-bench-platform",
+      "labels": ["type:security", "priority:medium", "sprint:3"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 3",
+      "estimate": "",
+      "status": "open",
+      "sprint": "Sprint 3",
+      "meta": {
+        "task_id": "T3-15",
+        "component": "ci",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Provision private S3 buckets for artifacts and agent logs",
+      "body": "Create encrypted, private S3 buckets for storing bench artifacts and agent logs with lifecycle rules.\n\n**Scope**\n- Create buckets with KMS encryption and versioning\n- Lifecycle policies for retention/cost control\n- Bucket policies restricting access to VPC endpoints and roles\n\n**Acceptance Criteria**\n- Buckets exist and are encrypted\n- Lifecycle rules implemented (e.g., transitions to infrequent/GLACIER)\n- Access policies restrict to bench roles and orchestrator",
+      "repo": "infra-bench-platform",
+      "labels": ["type:infra", "priority:medium", "sprint:3"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 3",
+      "estimate": "",
+      "status": "open",
+      "sprint": "Sprint 3",
+      "meta": {
+        "task_id": "T3-16",
+        "component": "storage",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Module READMEs and root README updates",
+      "body": "Provide concise README files per module and update root README with sprint-specific notes.\n\n**Scope**\n- Each module README: purpose, inputs, outputs, example\n- Root README: how to run dev env (backend init, plan)\n\n**Acceptance Criteria**\n- README exists for each module created in sprint\n- Root README contains dev deploy steps and prerequisites\n- Documentation is short, factual, and actionable",
+      "repo": "infra-bench-platform",
+      "labels": ["type:docs", "priority:low", "sprint:3"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 3",
+      "estimate": "",
+      "status": "open",
+      "sprint": "Sprint 3",
+      "meta": {
+        "task_id": "T3-17",
+        "component": "docs",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Baseline smoke tests and validation scripts",
+      "body": "Add simple automation/scripts to validate core infra (mount, SSM, DynamoDB access) for dev runs.\n\n**Scope**\n- Small scripts (bash/python) to run basic checks from bench instance\n- Integration into CI as optional sanity step\n\n**Acceptance Criteria**\n- Scripts present in `tests/smoke/`\n- Scripts can be run manually to validate bench functionality\n- Documentation on how to execute the smoke tests",
+      "repo": "infra-bench-platform",
+      "labels": ["type:test", "priority:low", "sprint:3"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 3",
+      "estimate": "",
+      "status": "open",
+      "sprint": "Sprint 3",
+      "meta": {
+        "task_id": "T3-18",
+        "component": "test",
+        "created_from": "chatgpt"
+      }
+    }
+  ]
+}

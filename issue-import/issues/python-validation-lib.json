@@ -1,0 +1,228 @@
+{
+  "issues": [
+    {
+      "title": "Define SOLID-aligned Python package structure",
+      "body": "Create the repository layout and initial module stubs following SOLID principles.\n\n**Description**\n\n- Add `src/<package>/` with domain-driven subpackages.\n- Provide public API surface (`__init__.py`) and module stubs.\n\n**Acceptance Criteria**\n\n- `src/<package>/` exists with at least 3 modules representing clear responsibilities.\n- Public API surface is documented in `README` stub.\n- Package imports without runtime errors (`python -c \"import <package>\"`).",
+      "repo": "python-validation-lib",
+      "labels": ["type:feature", "priority:high", "sprint:1"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 1",
+      "estimate": "2d",
+      "status": "open",
+      "sprint": "Sprint 1",
+      "meta": {
+        "task_id": "PVL-001",
+        "component": "api",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Configure pyproject.toml and commit lockfile",
+      "body": "Configure project build and dependency management and commit the lockfile to enable reproducible builds.\n\n**Description**\n\n- Choose packaging tool per ADR-001 (Poetry or setuptools) and add `pyproject.toml`.\n- Pin tooling and runtime dependencies and commit the lockfile.\n\n**Acceptance Criteria**\n\n- `pyproject.toml` committed and valid.\n- `poetry.lock` or equivalent lockfile committed.\n- `python -m build` produces identical artifacts on CI and locally for the same lockfile.",
+      "repo": "python-validation-lib",
+      "labels": ["type:infra", "priority:high", "sprint:1"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 1",
+      "estimate": "1d",
+      "status": "open",
+      "sprint": "Sprint 1",
+      "meta": {
+        "task_id": "PVL-002",
+        "component": "infra",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Implement linting and formatting (ruff + black)",
+      "body": "Add and configure ruff and black, and enforce them in CI and pre-commit.\n\n**Description**\n\n- Add ruff config and black settings.\n- Wire checks into pre-commit and CI.\n\n**Acceptance Criteria**\n\n- `pyproject.toml` or config files include ruff/black settings.\n- `pre-commit` configured to run black and ruff locally.\n- CI PR checks run ruff + black and block merge on violations.",
+      "repo": "python-validation-lib",
+      "labels": ["type:feature", "priority:high", "sprint:1"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 1",
+      "estimate": "0.5d",
+      "status": "open",
+      "sprint": "Sprint 1",
+      "meta": {
+        "task_id": "PVL-003",
+        "component": "infra",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Add type checking with mypy",
+      "body": "Integrate mypy type checking and enforce in CI to ensure typing discipline.\n\n**Description**\n\n- Add mypy config and type hints to public API stubs.\n- Run mypy as part of PR checks.\n\n**Acceptance Criteria**\n\n- `mypy.ini` or equivalent committed.\n- No type-check errors for the committed codebase in CI.\n- Mypy job included in PR workflow and blocks merge on failure.",
+      "repo": "python-validation-lib",
+      "labels": ["type:feature", "priority:high", "sprint:1"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 1",
+      "estimate": "1d",
+      "status": "open",
+      "sprint": "Sprint 1",
+      "meta": {
+        "task_id": "PVL-004",
+        "component": "api",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Add unit test framework and coverage baseline",
+      "body": "Configure pytest and coverage, add baseline unit tests for core modules and generate coverage reports in CI.\n\n**Description**\n\n- Configure `pytest` and `coverage.py`.\n- Implement baseline tests for critical units.\n\n**Acceptance Criteria**\n\n- Tests run locally with `pytest` and in CI.\n- Coverage report generated in CI and uploaded as artifact.\n- Baseline tests exist and exercise core modules; target coverage baseline recorded (goal ≥ 80%).",
+      "repo": "python-validation-lib",
+      "labels": ["type:test", "priority:high", "sprint:1"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 1",
+      "estimate": "2d",
+      "status": "open",
+      "sprint": "Sprint 1",
+      "meta": {
+        "task_id": "PVL-005",
+        "component": "test",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Integrate security scanning (bandit + dependency scan)",
+      "body": "Add static analysis (bandit) and dependency scanning to CI to detect SAST issues and vulnerable packages.\n\n**Description**\n\n- Configure bandit to run in CI.\n- Add dependency scanning step (safety or GitHub SCA) with threshold blocking CRITICAL issues.\n\n**Acceptance Criteria**\n\n- Bandit job present in PR workflow and produces reports.\n- Dependency scanner runs and produces alerts on vulnerable deps.\n- CI fails on CRITICAL severity findings as configured.",
+      "repo": "python-validation-lib",
+      "labels": ["type:security", "priority:high", "sprint:1"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 1",
+      "estimate": "1d",
+      "status": "open",
+      "sprint": "Sprint 1",
+      "meta": {
+        "task_id": "PVL-006",
+        "component": "security",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Create PR checks workflow (GitHub Actions)",
+      "body": "Implement `.github/workflows/pr-checks.yml` that runs formatting, linting, type checks, tests, coverage, and security scans across a Python matrix.\n\n**Description**\n\n- Add reusable jobs for each check and run on PR and push events.\n- Configure matrix for supported Python versions.\n\n**Acceptance Criteria**\n\n- `pr-checks.yml` exists and is triggered by PRs.\n- All jobs complete successfully for baseline commit.\n- Status checks are named and can be selected in branch protection rules.",
+      "repo": "python-validation-lib",
+      "labels": ["type:infra", "priority:high", "sprint:1"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 1",
+      "estimate": "1.5d",
+      "status": "open",
+      "sprint": "Sprint 1",
+      "meta": {
+        "task_id": "PVL-007",
+        "component": "infra",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Finalize semantic versioning ADR and minimal automation",
+      "body": "Decide on versioning policy (ADR-002) and add minimal automation for version bumps/tags.\n\n**Description**\n\n- Create ADR-002 documenting conventional commits vs tag-based approach.\n- Add a simple workflow or script to create version tags following the decided policy.\n\n**Acceptance Criteria**\n\n- ADR-002 committed under `ADRs/` with clear rules.\n- A script or workflow exists to perform a dry-run version bump and tag creation.\n- Versioning approach validated with a test tag creating a draft release (dry-run).",
+      "repo": "python-validation-lib",
+      "labels": ["type:adr", "priority:medium", "sprint:1"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 1",
+      "estimate": "0.5d",
+      "status": "open",
+      "sprint": "Sprint 1",
+      "meta": {
+        "task_id": "PVL-008",
+        "component": "adr",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Add initial release workflow (dry-run staging builds)",
+      "body": "Create `release.yml` to build artifacts in a hermetic container and run full test suite but not publish to production yet.\n\n**Description**\n\n- Build wheel + sdist in CI container.\n- Run integration/smoke tests and produce artifacts.\n\n**Acceptance Criteria**\n\n- `release.yml` runs on manual dispatch and tag events in dry-run mode.\n- Artifacts are produced and stored as CI artifacts.\n- No credentials required to run dry-run build.",
+      "repo": "python-validation-lib",
+      "labels": ["type:infra", "priority:medium", "sprint:1"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 1",
+      "estimate": "1d",
+      "status": "open",
+      "sprint": "Sprint 1",
+      "meta": {
+        "task_id": "PVL-009",
+        "component": "infra",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Create CONTRIBUTING.md",
+      "body": "Document contributor workflow, PR expectations, local dev setup, and pre-commit usage.\n\n**Description**\n\n- Include development steps, how to run tests locally, commit conventions, and how to run pre-commit.\n\n**Acceptance Criteria**\n\n- `CONTRIBUTING.md` present at repo root and references pre-commit hooks.\n- Contains steps to run tests and lint locally.\n- Linked from README.",
+      "repo": "python-validation-lib",
+      "labels": ["type:docs", "priority:medium", "sprint:1"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 1",
+      "estimate": "0.5d",
+      "status": "open",
+      "sprint": "Sprint 1",
+      "meta": {
+        "task_id": "PVL-010",
+        "component": "docs",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Create documentation skeleton (MkDocs or Sphinx)",
+      "body": "Add docs scaffolding and initial pages for usage, API reference placeholder, and contribution guide.\n\n**Description**\n\n- Choose MkDocs or Sphinx (per ADR-001 or team preference).\n- Add docs config, `index.md`, and API placeholder.\n\n**Acceptance Criteria**\n\n- `docs/` contains config and an `index.md` landing page.\n- Local build of docs succeeds (`mkdocs build` or `sphinx-build`).\n- CI step to build docs is present (optional preview).",
+      "repo": "python-validation-lib",
+      "labels": ["type:docs", "priority:medium", "sprint:1"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 1",
+      "estimate": "1d",
+      "status": "open",
+      "sprint": "Sprint 1",
+      "meta": {
+        "task_id": "PVL-011",
+        "component": "docs",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Add minimum ADR set and commit to /ADRs",
+      "body": "Create and commit ADR-001 through ADR-005 covering packaging, versioning, artifact registry, signing, and security scanning.\n\n**Description**\n\n- Write ADRs with rationale and chosen option.\n\n**Acceptance Criteria**\n\n- `ADRs/ADR-001.md` .. `ADRs/ADR-005.md` exist and are linked from README.\n- Each ADR includes decision, context, consequences, and status.",
+      "repo": "python-validation-lib",
+      "labels": ["type:adr", "priority:medium", "sprint:1"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 1",
+      "estimate": "0.5d",
+      "status": "open",
+      "sprint": "Sprint 1",
+      "meta": {
+        "task_id": "PVL-012",
+        "component": "adr",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Configure pre-commit hooks for local enforcement",
+      "body": "Add pre-commit configuration that runs black, ruff, mypy, and pytest (fast checks) locally before commit.\n\n**Description**\n\n- Add `.pre-commit-config.yaml` and document installation steps.\n\n**Acceptance Criteria**\n\n- `pre-commit` config committed.\n- Pre-commit installation documented in CONTRIBUTING.md.\n- Hooks run and prevent commits when checks fail.",
+      "repo": "python-validation-lib",
+      "labels": ["type:infra", "priority:medium", "sprint:1"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 1",
+      "estimate": "0.5d",
+      "status": "open",
+      "sprint": "Sprint 1",
+      "meta": {
+        "task_id": "PVL-013",
+        "component": "infra",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Update README with usage, standards, and links",
+      "body": "Refresh README to reflect current standards, development steps, and links to docs/ADRs/RUNBOOK.\n\n**Description**\n\n- Add short sections: overview, install, develop, tests, contributing, license.\n\n**Acceptance Criteria**\n\n- `README.md` updated and contains links to `CONTRIBUTING.md`, `ADRs/`, and `RUNBOOK.md` placeholder.\n- README includes badge placeholders for CI and coverage.",
+      "repo": "python-validation-lib",
+      "labels": ["type:docs", "priority:low", "sprint:1"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 1",
+      "estimate": "0.25d",
+      "status": "open",
+      "sprint": "Sprint 1",
+      "meta": {
+        "task_id": "PVL-014",
+        "component": "docs",
+        "created_from": "chatgpt"
+      }
+    }
+  ]
+}

@@ -1,0 +1,292 @@
+{
+  "issues": [
+    {
+      "title": "Implement OEM VPC Module (app, data, mgmt subnets)",
+      "body": "### Summary\nTerraform module to provision OEM VPC with application, database, and management subnets across multiple AZs.\n\n### Acceptance Criteria\n- Terraform module creates OEM VPC with segmented subnets (app, data, mgmt) across 2 AZs.\n- Route tables are isolated per subnet type and documented in module outputs.\n- No public internet exposure (no IGW attached unless explicitly parameterized).\n- Module inputs for CIDRs, AZ count, and tags present.\n\n### Implementation Notes\n- Follow infra baseline patterns from Sprint 3.\n- Add cost and env tags (Sprint 5 tagging conventions).",
+      "repo": "hybrid-networking-simulation",
+      "labels": ["type:infra", "priority:high", "sprint:6"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 6",
+      "estimate": "3d",
+      "status": "open",
+      "sprint": "Sprint 6",
+      "meta": {
+        "task_id": "T01",
+        "component": "infra",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Implement Supplier VPC Module (bench, internal, mgmt subnets)",
+      "body": "### Summary\nTerraform module to provision Supplier VPC with bench/test-client, internal services, and management subnets. NAT gateway optional and parameterized.\n\n### Acceptance Criteria\n- Supplier VPC created with three subnet types across 2 AZs.\n- Optional NAT Gateway configured via variable (default: disabled).\n- Subnet-level route tables and required outputs exist.\n- Tagging aligned with Sprint 5 cost tags.\n\n### Implementation Notes\n- Reuse module patterns from OEM VPC module where applicable.",
+      "repo": "hybrid-networking-simulation",
+      "labels": ["type:infra", "priority:high", "sprint:6"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 6",
+      "estimate": "2.5d",
+      "status": "open",
+      "sprint": "Sprint 6",
+      "meta": {
+        "task_id": "T02",
+        "component": "infra",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Configure Hybrid Connectivity per ADR-001 (VPN/Peering/TGW)",
+      "body": "### Summary\nDeploy the connectivity mechanism chosen in ADR-001 between OEM and Supplier VPCs (support for VPN, VPC Peering, or TGW).\n\n### Acceptance Criteria\n- Connectivity resource deployed and attached to both VPCs as per ADR decision.\n- Correct CIDR mappings and route propagation configured in route tables.\n- Health checks or CloudWatch metrics exist for tunnels/peering status.\n- Documented connection details in module outputs.",
+      "repo": "hybrid-networking-simulation",
+      "labels": ["type:feature", "priority:high", "sprint:6"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 6",
+      "estimate": "4d",
+      "status": "open",
+      "sprint": "Sprint 6",
+      "meta": {
+        "task_id": "T03",
+        "component": "infra",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Define and Apply Routing Tables for All Subnets",
+      "body": "### Summary\nCreate and enforce explicit route tables for all subnets in OEM and Supplier VPCs to ensure only intended paths exist.\n\n### Acceptance Criteria\n- Supplier subnets route diagnostic traffic via the hybrid link to OEM.\n- OEM subnets have return routes to Supplier via the hybrid link.\n- No undesired transitive routes are present (document verification steps).\n- Route table entries are output by Terraform for verification.",
+      "repo": "hybrid-networking-simulation",
+      "labels": ["type:infra", "priority:high", "sprint:6"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 6",
+      "estimate": "2d",
+      "status": "open",
+      "sprint": "Sprint 6",
+      "meta": {
+        "task_id": "T04",
+        "component": "infra",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Enforce Security Groups and NACL Boundaries",
+      "body": "### Summary\nCreate strict security groups and NACLs to enforce least-privilege between Supplier and OEM, ensuring only diagnostic API ports are allowed.\n\n### Acceptance Criteria\n- SG allows only diagnostic API ports (TLS) from Supplier CIDR to OEM app subnets.\n- OEM DB subnet denies Supplier ingress at SG and NACL levels.\n- NACL rules present for subnet-level inbound/outbound restrictions and documented.\n- Security rules tested and confirmed via connectivity tests.",
+      "repo": "hybrid-networking-simulation",
+      "labels": ["type:security", "priority:high", "sprint:6"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 6",
+      "estimate": "2d",
+      "status": "open",
+      "sprint": "Sprint 6",
+      "meta": {
+        "task_id": "T05",
+        "component": "security",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Deploy OEM Diagnostic API (Lambda/ECS) with TLS and OTEL",
+      "body": "### Summary\nDeploy a minimal diagnostic/CAN simulation endpoint in OEM VPC (Lambda behind private ALB or ECS) with TLS and OTEL instrumentation.\n\n### Acceptance Criteria\n- Diagnostic API deployed in OEM VPC app subnet and accessible only via internal network paths.\n- TLS termination configured (private cert via ACM or self-managed) and OTEL traces exported to Sprint 4 observability stack.\n- API logs available and integrated with CloudWatch/OTEL exporters.",
+      "repo": "hybrid-networking-simulation",
+      "labels": ["type:feature", "priority:medium", "sprint:6"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 6",
+      "estimate": "3d",
+      "status": "open",
+      "sprint": "Sprint 6",
+      "meta": {
+        "task_id": "T06",
+        "component": "api",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Deploy Supplier Test Client (Lambda/ECS) with Observability",
+      "body": "### Summary\nDeploy a test client in Supplier VPC that runs diagnostic calls to OEM API and exports latency/connectivity metrics to observability stack.\n\n### Acceptance Criteria\n- Test client can invoke diagnostic API over hybrid connection.\n- Client exports latency and success/failure metrics to Prometheus/OTEL stack (Sprint 4 integration).\n- Test invocation scripts and sample runs included as CI artifacts.",
+      "repo": "hybrid-networking-simulation",
+      "labels": ["type:feature", "priority:medium", "sprint:6"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 6",
+      "estimate": "2d",
+      "status": "open",
+      "sprint": "Sprint 6",
+      "meta": {
+        "task_id": "T07",
+        "component": "api",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Enable VPC Flow Logs (S3/CloudWatch) with KMS Encryption",
+      "body": "### Summary\nEnable VPC Flow Logs for both OEM and Supplier VPCs, delivering to S3 and CloudWatch with KMS encryption and retention per ADR-003.\n\n### Acceptance Criteria\n- Flow Logs created for both VPCs and delivering ACCEPT/REJECT records.\n- Logs encrypted with KMS and retention policy applied.\n- CloudWatch log groups created and accessible with correct IAM permissions.",
+      "repo": "hybrid-networking-simulation",
+      "labels": ["type:infra", "priority:high", "sprint:6"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 6",
+      "estimate": "1.5d",
+      "status": "open",
+      "sprint": "Sprint 6",
+      "meta": {
+        "task_id": "T08",
+        "component": "infra",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Integrate Flow Logs and Metrics with Observability Stack",
+      "body": "### Summary\nWire VPC Flow Logs, API metrics, and test-client metrics into the Prometheus/Loki/Grafana/OTEL stack provisioned in Sprint 4.\n\n### Acceptance Criteria\n- Flow log queries available in CloudWatch Insights and sample queries committed to repo.\n- Prometheus scrapes or OTEL receivers ingest relevant metrics (latency, packet drops).\n- Grafana dashboard showing RTT, packet acceptance rates, and throughput created.",
+      "repo": "hybrid-networking-simulation",
+      "labels": ["type:feature", "priority:medium", "sprint:6"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 6",
+      "estimate": "2d",
+      "status": "open",
+      "sprint": "Sprint 6",
+      "meta": {
+        "task_id": "T09",
+        "component": "observability",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Add Cost Visibility Tags and Network Traffic Cost Labels",
+      "body": "### Summary\nEnsure all network resources include Sprint 5 cost tags and that flow logs contain labels useful for cost attribution.\n\n### Acceptance Criteria\n- All VPCs, subnets, gateways, and connectivity resources tagged with cost-center, project, and env.\n- Documentation explaining how to derive network cost from logs and tags included.\n- Sample cost report template committed to repo.",
+      "repo": "hybrid-networking-simulation",
+      "labels": ["type:infra", "priority:medium", "sprint:6"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 6",
+      "estimate": "1d",
+      "status": "open",
+      "sprint": "Sprint 6",
+      "meta": {
+        "task_id": "T10",
+        "component": "infra",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Implement Terraform CI Pipeline (fmt, validate, tfsec, checkov, plan)",
+      "body": "### Summary\nAdd GitHub Actions workflows to run terraform fmt/validate, tfsec/checkov scans, and plan on PRs. Block merges on failing checks.\n\n### Acceptance Criteria\n- Workflow runs on PRs and executes fmt/validate, tfsec, checkov, and terraform plan.\n- Plan artifact stored with PR and requires manual approval to apply to prod.\n- Pipeline documented in .github/workflows/ and README.",
+      "repo": "hybrid-networking-simulation",
+      "labels": ["type:infra", "priority:high", "sprint:6"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 6",
+      "estimate": "1.5d",
+      "status": "open",
+      "sprint": "Sprint 6",
+      "meta": {
+        "task_id": "T11",
+        "component": "infra",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Automated Connectivity Tests (Terratest or Python utilities)",
+      "body": "### Summary\nCreate automated tests to validate allowed and denied connectivity scenarios using Terratest or Python utilities from Sprint 1.\n\n### Acceptance Criteria\n- Tests verify API reachability from Supplier to OEM.\n- Tests assert blocked access to OEM DB and management subnets.\n- Test results stored as CI artifacts and pass in PR pipeline.",
+      "repo": "hybrid-networking-simulation",
+      "labels": ["type:test", "priority:medium", "sprint:6"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 6",
+      "estimate": "3d",
+      "status": "open",
+      "sprint": "Sprint 6",
+      "meta": {
+        "task_id": "T12",
+        "component": "test",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Add Environment Lifecycle Automation (spin-up / spin-down)",
+      "body": "### Summary\nProvide scripts/workflows to provision and destroy dev environments quickly and cleanly (teardown cleans logs and state).\n\n### Acceptance Criteria\n- Script or GH workflow creates dev environment using Terraform and destroys it reliably.\n- Teardown removes temporary resources, CloudWatch log groups, and S3 artifacts (or moves them to archive).\n- Documentation included for usage and limitations.",
+      "repo": "hybrid-networking-simulation",
+      "labels": ["type:feature", "priority:medium", "sprint:6"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 6",
+      "estimate": "2d",
+      "status": "open",
+      "sprint": "Sprint 6",
+      "meta": {
+        "task_id": "T13",
+        "component": "infra",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Update Routing Documentation (ROUTING.md)",
+      "body": "### Summary\nDocument route tables and routing sequences for every subnet and connectivity option.\n\n### Acceptance Criteria\n- ROUTING.md includes explicit route entries per subnet and example verification CLI commands.\n- Contains diagrams or ASCII flow for quick troubleshooting.\n- Committed to docs/ and referenced in RUNBOOK.md.",
+      "repo": "hybrid-networking-simulation",
+      "labels": ["type:docs", "priority:low", "sprint:6"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 6",
+      "estimate": "0.5d",
+      "status": "open",
+      "sprint": "Sprint 6",
+      "meta": {
+        "task_id": "T14",
+        "component": "docs",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Update Networking Runbook (RUNBOOK.md)",
+      "body": "### Summary\nCreate or update runbook with steps to debug connectivity, common failure modes, and log locations.\n\n### Acceptance Criteria\n- RUNBOOK.md includes step-by-step checks (route tables, SGs, NACLs, flow logs) and CloudWatch query examples.\n- Contact and escalation info, and required IAM permissions listed.\n- Stored in docs/ and linked from README.",
+      "repo": "hybrid-networking-simulation",
+      "labels": ["type:docs", "priority:medium", "sprint:6"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 6",
+      "estimate": "1d",
+      "status": "open",
+      "sprint": "Sprint 6",
+      "meta": {
+        "task_id": "T15",
+        "component": "docs",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Create Final Architecture Diagram (OEM–Supplier Topology)",
+      "body": "### Summary\nProduce final topology diagram showing subnets, route tables, connectivity links, security controls, and observability flows.\n\n### Acceptance Criteria\n- Diagram includes OEM and Supplier VPCs, subnets, route flows, and connectivity type selected in ADR-001.\n- Exported PNG/SVG in docs/diagrams/ and referenced in README and RUNBOOK.\n- Diagram reviewed and approved by team.",
+      "repo": "hybrid-networking-simulation",
+      "labels": ["type:docs", "priority:medium", "sprint:6"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 6",
+      "estimate": "0.5d",
+      "status": "open",
+      "sprint": "Sprint 6",
+      "meta": {
+        "task_id": "T16",
+        "component": "docs",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "ADR-004 Update: Firewall/Inspection Decision",
+      "body": "### Summary\nFinalize ADR to document whether AWS Network Firewall or SG/NACL-only approach is used, including rationale and logging model.\n\n### Acceptance Criteria\n- ADR-004 updated with chosen inspection strategy, cost and security trade-offs.\n- Includes logging/alerting implications and rollback plan.\n- ADR committed under docs/adr/ and referenced by infra modules.",
+      "repo": "hybrid-networking-simulation",
+      "labels": ["type:adr", "priority:low", "sprint:6"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 6",
+      "estimate": "",
+      "status": "open",
+      "sprint": "Sprint 6",
+      "meta": {
+        "task_id": "T17",
+        "component": "adr",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "End-to-End Validation Checklist and Execution",
+      "body": "### Summary\nPrepare and execute an E2E validation checklist that covers routing, SG/NACL enforcement, connectivity, flow logs, observability, and cost tagging.\n\n### Acceptance Criteria\n- Checklist created and stored in docs/validation.md.\n- All items executed with pass/fail recorded; failures documented with remediation steps.\n- Test outputs attached to sprint PR as CI artifacts.",
+      "repo": "hybrid-networking-simulation",
+      "labels": ["type:test", "priority:medium", "sprint:6"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 6",
+      "estimate": "1.5d",
+      "status": "open",
+      "sprint": "Sprint 6",
+      "meta": {
+        "task_id": "T18",
+        "component": "test",
+        "created_from": "chatgpt"
+      }
+    }
+  ]
+}

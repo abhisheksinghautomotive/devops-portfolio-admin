@@ -1,0 +1,292 @@
+{
+  "issues": [
+    {
+      "title": "Deploy Base Prometheus Stack",
+      "body": "Deploy a Prometheus stack for scraping metrics from orchestrator, bench hosts, workers, and CI runners.\n\n**Acceptance Criteria**\n- Prometheus instance(s) deployed and reachable in the dev environment.\n- Scrape configs include targets for orchestrator, bench hosts, workers, and CI runners.\n- Prometheus UI accessible via internal URL and returning metrics.\n- Retention settings configured for 30-day hot storage.\n\n**Notes**\n- Use operator or EC2-hosted approach depending on infra constraints.\n",
+      "repo": "testbench-observability",
+      "labels": ["type:infra", "priority:high", "sprint:4"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 4",
+      "estimate": "5d",
+      "status": "open",
+      "sprint": "Sprint 4",
+      "meta": {
+        "task_id": "TB-001",
+        "component": "infra",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Configure Loki Log Ingestion Pipeline",
+      "body": "Deploy and configure Loki for structured JSON log ingestion and querying.\n\n**Acceptance Criteria**\n- Loki deployed and reachable in dev environment.\n- Log ingestion configured via OTEL/agent and validated for at least one service.\n- Required labels present on logs: `correlation_id`, `bench_id`, `environment`, `team`.\n- Queries return structured JSON fields and sample log retention policy is set.\n",
+      "repo": "testbench-observability",
+      "labels": ["type:infra", "priority:high", "sprint:4"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 4",
+      "estimate": "4d",
+      "status": "open",
+      "sprint": "Sprint 4",
+      "meta": {
+        "task_id": "TB-002",
+        "component": "infra",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Implement OpenTelemetry Collector Pipeline",
+      "body": "Deploy OTEL Collector to centralize metrics, logs, and traces and export to Prometheus, Loki, and Jaeger/X-Ray.\n\n**Acceptance Criteria**\n- OTEL Collector deployed with receivers for metrics, logs, and traces.\n- Exporters configured: Prometheus remote-write (or scrape), Loki, Jaeger/X-Ray.\n- Batching and sampling policies present and documented.\n- Collector accepts test telemetry and forwards to backends without data loss.\n",
+      "repo": "testbench-observability",
+      "labels": ["type:feature", "priority:high", "sprint:4"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 4",
+      "estimate": "4d",
+      "status": "open",
+      "sprint": "Sprint 4",
+      "meta": {
+        "task_id": "TB-003",
+        "component": "collector",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Integrate Python OpenTelemetry SDK in Orchestrator",
+      "body": "Add tracing instrumentation to the orchestrator using the Python OTEL SDK to ensure end-to-end traceability.\n\n**Acceptance Criteria**\n- Instrumentation wrapper added to API, scheduler, and dispatch paths.\n- Standardized span names and attributes documented and used.\n- Correlation IDs are generated/propagated and visible in traces and logs.\n- A sample execution produces a complete trace visible in Jaeger/X-Ray.\n",
+      "repo": "testbench-observability",
+      "labels": ["type:feature", "priority:high", "sprint:4"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 4",
+      "estimate": "3d",
+      "status": "open",
+      "sprint": "Sprint 4",
+      "meta": {
+        "task_id": "TB-004",
+        "component": "api",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Bench Host Exporter Configuration",
+      "body": "Install and configure exporters/agents on bench hosts to expose host and bench-specific metrics.\n\n**Acceptance Criteria**\n- Node exporter or CloudWatch agent deployed on all bench hosts.\n- Metrics include CPU, memory, disk, network, bench.status, and bench-specific custom metrics.\n- Prometheus successfully scrapes bench hosts and metrics appear in the UI.\n- Exporter overhead measured and confirmed <2% CPU on bench hosts.\n",
+      "repo": "testbench-observability",
+      "labels": ["type:feature", "priority:high", "sprint:4"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 4",
+      "estimate": "3d",
+      "status": "open",
+      "sprint": "Sprint 4",
+      "meta": {
+        "task_id": "TB-005",
+        "component": "infra",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Publish Execution Metrics for Test Runs",
+      "body": "Implement and expose metrics for test execution: success rate, duration, failure types, labeled by bench_id and test_suite.\n\n**Acceptance Criteria**\n- Metrics published: `execution.duration_seconds`, `execution.success_rate`, `worker.task_failures_total`.\n- Labels present: `bench_id`, `test_suite`, `commit_sha`, `environment`.\n- Metrics scraped by Prometheus and appear on sample queries.\n- Sample dashboards can visualize these metrics.\n",
+      "repo": "testbench-observability",
+      "labels": ["type:feature", "priority:high", "sprint:4"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 4",
+      "estimate": "3d",
+      "status": "open",
+      "sprint": "Sprint 4",
+      "meta": {
+        "task_id": "TB-006",
+        "component": "api",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Create Bench Operations Dashboard (Grafana)",
+      "body": "Create Grafana dashboard focused on bench availability, utilization, and queue length with 15s refresh for critical panels.\n\n**Acceptance Criteria**\n- Dashboard contains panels for bench availability, in-use vs idle, queue length, and current alerts.\n- Panels refresh within 15s for critical metrics.\n- Panels link to logs/traces for drill-down.\n- Dashboard JSON committed to `dashboards/` and validated by CI.\n",
+      "repo": "testbench-observability",
+      "labels": ["type:feature", "priority:high", "sprint:4"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 4",
+      "estimate": "2d",
+      "status": "open",
+      "sprint": "Sprint 4",
+      "meta": {
+        "task_id": "TB-007",
+        "component": "dashboard",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Create Queue and Execution Dashboard",
+      "body": "Create Grafana dashboard showing queue latency, execution latency (p50/p90/p99), success rates, and flaky-test trends.\n\n**Acceptance Criteria**\n- Panels for p50/p90/p99 execution duration, queue latency, and success rate implemented.\n- Error heatmap and flaky-test trend panels present and queryable.\n- Each failing test panel links to logs/traces for RCA.\n",
+      "repo": "testbench-observability",
+      "labels": ["type:feature", "priority:medium", "sprint:4"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 4",
+      "estimate": "2d",
+      "status": "open",
+      "sprint": "Sprint 4",
+      "meta": {
+        "task_id": "TB-008",
+        "component": "dashboard",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Configure Basic Alert Rules (P1/P2)",
+      "body": "Create Prometheus alert rules for P1/P2 conditions and route them to Alertmanager integrations (Slack/SNS/PagerDuty).\n\n**Acceptance Criteria**\n- Alert rules implemented for bench offline, queue length threshold, and elevated failure rate.\n- Alerts route to Slack/SNS and include severity tags.\n- Alert firing verified with synthetic telemetry.\n- Alerts documented in `alerting/` and validated by CI.\n",
+      "repo": "testbench-observability",
+      "labels": ["type:feature", "priority:high", "sprint:4"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 4",
+      "estimate": "2d",
+      "status": "open",
+      "sprint": "Sprint 4",
+      "meta": {
+        "task_id": "TB-009",
+        "component": "alerting",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Author Initial Runbooks for P1/P2 Alerts",
+      "body": "Create concise runbooks for the P1 and P2 alerts with validation, mitigation, and escalation steps.\n\n**Acceptance Criteria**\n- Runbooks present in `docs/RUNBOOK.md` covering each alert in scope.\n- Each runbook contains quick checks, mitigation steps, and PagerDuty escalation path.\n- Runbooks reviewed and approved by on-call owner.\n",
+      "repo": "testbench-observability",
+      "labels": ["type:docs", "priority:medium", "sprint:4"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 4",
+      "estimate": "1d",
+      "status": "open",
+      "sprint": "Sprint 4",
+      "meta": {
+        "task_id": "TB-010",
+        "component": "docs",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Implement Log Schema Validation in CI",
+      "body": "Add CI lint/validation that ensures logs include required fields and follow JSON schema.\n\n**Acceptance Criteria**\n- GitHub Actions job validates log JSON schema for required fields: `timestamp`, `correlation_id`, `service`, `bench_id`.\n- PRs with invalid log schema fail the CI job.\n- Documentation added on required log format.\n",
+      "repo": "testbench-observability",
+      "labels": ["type:test", "priority:medium", "sprint:4"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 4",
+      "estimate": "1d",
+      "status": "open",
+      "sprint": "Sprint 4",
+      "meta": {
+        "task_id": "TB-011",
+        "component": "ci",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "CI Pipeline: Dashboard and Alert Validation",
+      "body": "Add GitHub Actions jobs to validate Grafana dashboard JSON and Prometheus alert rule syntax on PRs.\n\n**Acceptance Criteria**\n- GitHub Actions job validates Grafana JSON structure and queries for syntax errors.\n- Alert rule YAML is linted and tested for proper label/expr presence.\n- PRs with invalid artifacts fail the checks.\n",
+      "repo": "testbench-observability",
+      "labels": ["type:infra", "priority:medium", "sprint:4"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 4",
+      "estimate": "2d",
+      "status": "open",
+      "sprint": "Sprint 4",
+      "meta": {
+        "task_id": "TB-012",
+        "component": "ci",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Create Terraform/Helm Modules for Observability",
+      "body": "Implement reusable Terraform modules or Helm charts for Prometheus, Loki, and OTEL collector deployments.\n\n**Acceptance Criteria**\n- Modules/charts created in `helm/` or `terraform/` with variables for retention and endpoints.\n- Modules tested via `terraform plan`/`helm template` in dev.\n- Documentation on usage and variables added.\n",
+      "repo": "testbench-observability",
+      "labels": ["type:infra", "priority:medium", "sprint:4"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 4",
+      "estimate": "4d",
+      "status": "open",
+      "sprint": "Sprint 4",
+      "meta": {
+        "task_id": "TB-013",
+        "component": "infra",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Enable S3 Backup for Loki/Prometheus Snapshots",
+      "body": "Configure snapshotting and archival to S3 with lifecycle policies for hot→cold retention.\n\n**Acceptance Criteria**\n- Snapshot policy configured for Prometheus and Loki to S3.\n- S3 lifecycle rules set to transition to Glacier per retention policy.\n- Restore test performed to validate snapshots.\n",
+      "repo": "testbench-observability",
+      "labels": ["type:infra", "priority:medium", "sprint:4"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 4",
+      "estimate": "2d",
+      "status": "open",
+      "sprint": "Sprint 4",
+      "meta": {
+        "task_id": "TB-014",
+        "component": "storage",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Create Correlation-ID Injection Middleware",
+      "body": "Implement middleware to generate and propagate correlation IDs across services when missing.\n\n**Acceptance Criteria**\n- Middleware injects a `correlation_id` if request does not include one.\n- Correlation ID is propagated through headers, logs, metrics, and traces.\n- Verified with end-to-end synthetic request producing logs/traces with same ID.\n",
+      "repo": "testbench-observability",
+      "labels": ["type:feature", "priority:medium", "sprint:4"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 4",
+      "estimate": "1d",
+      "status": "open",
+      "sprint": "Sprint 4",
+      "meta": {
+        "task_id": "TB-015",
+        "component": "api",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Trace Linking: Orchestrator → Worker → Runner",
+      "body": "Ensure traces link across orchestrator, worker, and runner to form a single end-to-end trace for executions.\n\n**Acceptance Criteria**\n- Spans from orchestrator, worker, and runner appear under one trace in Jaeger/X-Ray for sample runs.\n- Trace contains expected span names and attributes including `bench_id` and `correlation_id`.\n- Documentation of span conventions added to `docs/`.\n",
+      "repo": "testbench-observability",
+      "labels": ["type:feature", "priority:medium", "sprint:4"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 4",
+      "estimate": "2d",
+      "status": "open",
+      "sprint": "Sprint 4",
+      "meta": {
+        "task_id": "TB-016",
+        "component": "tracing",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Document Observability Architecture and Diagrams",
+      "body": "Update README and architecture diagrams to reflect implemented components and data flows.\n\n**Acceptance Criteria**\n- Architecture diagram updated in `docs/` and linked from README.\n- Component responsibilities and data flows documented.\n- Documentation reviewed and merged.\n",
+      "repo": "testbench-observability",
+      "labels": ["type:docs", "priority:low", "sprint:4"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 4",
+      "estimate": "1d",
+      "status": "open",
+      "sprint": "Sprint 4",
+      "meta": {
+        "task_id": "TB-017",
+        "component": "docs",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Integration Test: Synthetic Execution Telemetry",
+      "body": "Implement a synthetic test that generates execution telemetry (metrics, logs, traces) to validate end-to-end flow.\n\n**Acceptance Criteria**\n- Synthetic job emits metrics, logs, and traces through OTEL collector.\n- Data appears in Prometheus, Loki, and Jaeger/X-Ray dashboards.\n- CI job runs synthetic test and verifies visibility as part of PR gating.\n",
+      "repo": "testbench-observability",
+      "labels": ["type:test", "priority:high", "sprint:4"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 4",
+      "estimate": "2d",
+      "status": "open",
+      "sprint": "Sprint 4",
+      "meta": {
+        "task_id": "TB-018",
+        "component": "test",
+        "created_from": "chatgpt"
+      }
+    }
+  ]
+}

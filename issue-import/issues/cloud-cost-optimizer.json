@@ -1,0 +1,324 @@
+{
+  "issues": [
+    {
+      "title": "CUR Ingestion Pipeline: S3 → Glue → Athena",
+      "body": "Implement the AWS Cost & Usage Report ingestion pipeline.\n\n**Acceptance Criteria:**\n- CUR delivered to S3 daily and bucket path documented.\n- Glue crawler created and scheduled; schema updates reflected in Athena.\n- Athena base tables accessible to ETL jobs.\n- Validation query shows parity with AWS Cost Explorer within 5%.\n\n**Notes:** Configure KMS encryption, bucket lifecycle, and access roles.",
+      "repo": "cloud-cost-optimizer",
+      "labels": ["type:feature", "priority:high", "sprint:5"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 5",
+      "estimate": "3d",
+      "status": "open",
+      "sprint": "Sprint 5",
+      "meta": {
+        "task_id": "CCO-501",
+        "component": "etl",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Usage Ingestion Job: Orchestrator → Raw Usage Table",
+      "body": "Create hourly ingestion job for bench usage data from the orchestrator.\n\n**Acceptance Criteria:**\n- Hourly job ingests orchestrator JSON payloads to `raw_usage` table.\n- Schema aligns with Sprint 2 orchestrator payload contract.\n- Ingestion failures generate alerts and retry logs.\n\n**Notes:** Use Lambda or scheduled Glue job with idempotency.",
+      "repo": "cloud-cost-optimizer",
+      "labels": ["type:feature", "priority:high", "sprint:5"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 5",
+      "estimate": "2d",
+      "status": "open",
+      "sprint": "Sprint 5",
+      "meta": {
+        "task_id": "CCO-502",
+        "component": "etl",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Normalized Cost ETL: join cost + usage + metadata",
+      "body": "Build ETL transformations to produce normalized cost metrics.\n\n**Acceptance Criteria:**\n- `cost_per_bench`, `cost_per_execution`, `idle_hours` computed and persisted to curated Athena tables.\n- ETL failures trigger alerts and produce clear error messages.\n- ETL output schema documented and stable for downstream consumers.\n\n**Notes:** Implement incremental processing and partitioning for cost efficiency.",
+      "repo": "cloud-cost-optimizer",
+      "labels": ["type:feature", "priority:high", "sprint:5"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 5",
+      "estimate": "4d",
+      "status": "open",
+      "sprint": "Sprint 5",
+      "meta": {
+        "task_id": "CCO-503",
+        "component": "etl",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Tagging Compliance Validator (Runtime Scanner)",
+      "body": "Implement a runtime Lambda that scans infra for required tags and reports/rectifies issues.\n\n**Acceptance Criteria:**\n- Lambda identifies missing/invalid `CostCenter`, `Owner`, `Environment`, `Service`, `Project`, `BenchID` tags.\n- Notifications sent to owners via Slack/SNS with actionable details.\n- Findings written to DynamoDB for audit and historical tracking.\n\n**Notes:** Respect IAM least-privilege and avoid modifying tags without owner consent (configurable).",
+      "repo": "cloud-cost-optimizer",
+      "labels": ["type:feature", "priority:high", "sprint:5"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 5",
+      "estimate": "2d",
+      "status": "open",
+      "sprint": "Sprint 5",
+      "meta": {
+        "task_id": "CCO-504",
+        "component": "automation",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "CI Policy: Tag Enforcement in Terraform + GitHub Actions",
+      "body": "Add a GitHub Actions job that validates Terraform resource tags and blocks PRs without required tags/values.\n\n**Acceptance Criteria:**\n- CI job runs on PRs and checks Terraform configs for required tags.\n- PR fails with clear message when tags missing or values invalid.\n- Allowed tag values sourced from a central policy file (stored in repo).\n\n**Notes:** Provide remediation guidance in CI output.",
+      "repo": "cloud-cost-optimizer",
+      "labels": ["type:infra", "priority:high", "sprint:5"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 5",
+      "estimate": "1d",
+      "status": "open",
+      "sprint": "Sprint 5",
+      "meta": {
+        "task_id": "CCO-505",
+        "component": "infra",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Idle-Stop Automation Lambda (Detection → Warn → Stop)",
+      "body": "Create scheduled automation to identify idle benches, notify owners, and stop unused instances after grace period.\n\n**Acceptance Criteria:**\n- Idle benches detected from curated metrics and flagged.\n- Owner receives warning; if no action, instance is stopped after configurable threshold.\n- All actions recorded in an immutable audit log (DynamoDB) with timestamps and rationale.\n\n**Notes:** Include feature flags to disable auto-stop in environments.",
+      "repo": "cloud-cost-optimizer",
+      "labels": ["type:feature", "priority:high", "sprint:5"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 5",
+      "estimate": "3d",
+      "status": "open",
+      "sprint": "Sprint 5",
+      "meta": {
+        "task_id": "CCO-506",
+        "component": "automation",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Bench-State Validation Integration with Observability Signals",
+      "body": "Integrate bench-state and activity signals from testbench-observability to avoid false stops.\n\n**Acceptance Criteria:**\n- Idle-stop reads bench-state signals (active, scheduled, maintenance) before action.\n- Active or scheduled benches are excluded from stopping logic.\n- Integration tested end-to-end in non-prod environments.\n\n**Notes:** Use existing Sprint 4 metrics/labels and fail-safe checks.",
+      "repo": "cloud-cost-optimizer",
+      "labels": ["type:feature", "priority:medium", "sprint:5"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 5",
+      "estimate": "2d",
+      "status": "open",
+      "sprint": "Sprint 5",
+      "meta": {
+        "task_id": "CCO-507",
+        "component": "automation",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Forecasting Model: 30-Day Bench Usage Forecast (Simple Regression)",
+      "body": "Implement a simple forecasting pipeline to predict bench usage for the next 30 days and store results.\n\n**Acceptance Criteria:**\n- Daily forecast produced and stored in `forecasting` table.\n- Model error (MAE) under 15% when evaluated on recent 3-month history.\n- Forecast outputs consumed by monthly report pipeline.\n\n**Notes:** Start with regression; make model swappable per ADR.",
+      "repo": "cloud-cost-optimizer",
+      "labels": ["type:feature", "priority:medium", "sprint:5"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 5",
+      "estimate": "3d",
+      "status": "open",
+      "sprint": "Sprint 5",
+      "meta": {
+        "task_id": "CCO-508",
+        "component": "etl",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Spend Anomaly Detection & Alerts",
+      "body": "Create anomaly detection rules and alerting for abnormal spend spikes.\n\n**Acceptance Criteria:**\n- Alerts trigger when spend deviates from baseline by configured thresholds.\n- CloudWatch/CloudWatch Events or Athena-based scheduled queries generate alerts.\n- Notifications sent to Slack/SNS with context and recommended actions.\n\n**Notes:** Baseline can be rolling 30-day average; tune thresholds in staging.",
+      "repo": "cloud-cost-optimizer",
+      "labels": ["type:feature", "priority:medium", "sprint:5"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 5",
+      "estimate": "2d",
+      "status": "open",
+      "sprint": "Sprint 5",
+      "meta": {
+        "task_id": "CCO-509",
+        "component": "monitoring",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Cost Dashboards: Grafana/QuickSight Panels",
+      "body": "Create dashboards for cost-per-team, utilization, idle waste, and trends.\n\n**Acceptance Criteria:**\n- Dashboards use Athena as data source and refresh key panels <3 minutes.\n- Panels include cost-per-team, cost-per-bench, idle percentage, forecast view.\n- Dashboard JSON/configs stored in repo for CI validation.\n\n**Notes:** Provide role-based access for engineering and finance viewers.",
+      "repo": "cloud-cost-optimizer",
+      "labels": ["type:feature", "priority:high", "sprint:5"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 5",
+      "estimate": "3d",
+      "status": "open",
+      "sprint": "Sprint 5",
+      "meta": {
+        "task_id": "CCO-510",
+        "component": "dashboards",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Dashboard JSON Validation CI Job",
+      "body": "Add CI checks to validate dashboard JSON/definitions before merges.\n\n**Acceptance Criteria:**\n- CI job validates JSON/YAML formats and required fields.\n- Invalid dashboards fail the PR with useful error messages.\n- Successful validation publishes artifacts to build workspace.",
+      "repo": "cloud-cost-optimizer",
+      "labels": ["type:test", "priority:medium", "sprint:5"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 5",
+      "estimate": "1d",
+      "status": "open",
+      "sprint": "Sprint 5",
+      "meta": {
+        "task_id": "CCO-511",
+        "component": "ci",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "ETL Unit Tests and CI Integration (Pandas/Python)",
+      "body": "Write unit tests for ETL metric computations and integrate into CI.\n\n**Acceptance Criteria:**\n- Test coverage >=70% for transformation functions.\n- Mocked CUR and usage fixtures validate metric outputs.\n- Tests run on GitHub Actions for PRs; failures block merges.",
+      "repo": "cloud-cost-optimizer",
+      "labels": ["type:test", "priority:medium", "sprint:5"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 5",
+      "estimate": "2d",
+      "status": "open",
+      "sprint": "Sprint 5",
+      "meta": {
+        "task_id": "CCO-512",
+        "component": "etl",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Glue & Athena Terraform Module",
+      "body": "Provision Glue crawler, Athena DB, and base tables with Terraform modules.\n\n**Acceptance Criteria:**\n- Terraform module provisions Glue crawler, Glue DB, Athena workgroup, and S3 paths.\n- Module parameterized for dev/stage/prod and outputs resource identifiers.\n- Module documented and tested in a sandbox environment.",
+      "repo": "cloud-cost-optimizer",
+      "labels": ["type:infra", "priority:medium", "sprint:5"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 5",
+      "estimate": "3d",
+      "status": "open",
+      "sprint": "Sprint 5",
+      "meta": {
+        "task_id": "CCO-513",
+        "component": "infra",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "IAM Least-Privilege Roles for ETL & Automation",
+      "body": "Define and apply least-privilege IAM roles for ingestion, processing, and automation components.\n\n**Acceptance Criteria:**\n- Separate roles for ingestion, ETL processing, and automation with scoped permissions.\n- No wildcard `*` permissions; reviewed by IAM Access Analyzer.\n- Roles deployed via Terraform and referenced by Lambdas/Glue jobs.",
+      "repo": "cloud-cost-optimizer",
+      "labels": ["type:security", "priority:high", "sprint:5"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 5",
+      "estimate": "2d",
+      "status": "open",
+      "sprint": "Sprint 5",
+      "meta": {
+        "task_id": "CCO-514",
+        "component": "security",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Monthly Cost Reporting Pipeline (EventBridge → Step Function)",
+      "body": "Implement scheduled monthly reporting pipeline that compiles summary, forecast, and rightsizing suggestions and sends to Slack/Teams.\n\n**Acceptance Criteria:**\n- Monthly job runs via EventBridge and Step Functions.\n- Report includes summary, forecast, and top rightsizing recommendations.\n- Report archived to S3 and a notification posted to Slack/Teams.",
+      "repo": "cloud-cost-optimizer",
+      "labels": ["type:feature", "priority:medium", "sprint:5"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 5",
+      "estimate": "2d",
+      "status": "open",
+      "sprint": "Sprint 5",
+      "meta": {
+        "task_id": "CCO-515",
+        "component": "reporting",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Runbook Documentation: ETL, Idle-Stop, Dashboards",
+      "body": "Create operational runbook with troubleshooting steps and on-call procedures.\n\n**Acceptance Criteria:**\n- `docs/RUNBOOK.md` includes steps for ETL failures, idle-stop rollback, dashboard issues, and alert handling.\n- Runbook stored in repo and linked in deployment docs.\n- On-call rotation and escalation documented.",
+      "repo": "cloud-cost-optimizer",
+      "labels": ["type:docs", "priority:medium", "sprint:5"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 5",
+      "estimate": "1d",
+      "status": "open",
+      "sprint": "Sprint 5",
+      "meta": {
+        "task_id": "CCO-516",
+        "component": "docs",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "ADR Updates: ETL, Idle-Stop Strategy, Dashboard Stack",
+      "body": "Update ADRs to reflect implementation choices and decisions made in Sprint 5.\n\n**Acceptance Criteria:**\n- ADR-001, ADR-002, ADR-005 updated and added to `/docs/adrs`.\n- ADRs include rationale, tradeoffs, and migration plan.\n- ADRs reviewed and approved in PR.",
+      "repo": "cloud-cost-optimizer",
+      "labels": ["type:adr", "priority:medium", "sprint:5"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 5",
+      "estimate": "1d",
+      "status": "open",
+      "sprint": "Sprint 5",
+      "meta": {
+        "task_id": "CCO-517",
+        "component": "docs",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Performance & Cost Validation Tests (Athena query cost, idle-stop sandbox)",
+      "body": "Benchmark Athena query costs and validate idle-stop workflow on sandbox benches.\n\n**Acceptance Criteria:**\n- Representative queries cost measured and documented; any expensive queries optimized.\n- Idle-stop tested on sandbox benches without impacting production.\n- Test results stored in repo and improvements actioned.",
+      "repo": "cloud-cost-optimizer",
+      "labels": ["type:test", "priority:medium", "sprint:5"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 5",
+      "estimate": "2d",
+      "status": "open",
+      "sprint": "Sprint 5",
+      "meta": {
+        "task_id": "CCO-518",
+        "component": "testing",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "ETL Monitoring & Alerting: Ingestion Lag and Processing Errors",
+      "body": "Add CloudWatch metrics and alerts for ingestion lag, ETL failure rates, and data freshness.\n\n**Acceptance Criteria:**\n- CloudWatch metrics exposed: ingestion_lag_hours, etl_failure_count, data_freshness_minutes.\n- Alerts created for SLA breaches and routed to on-call channel.\n- Dashboards include these operational panels.",
+      "repo": "cloud-cost-optimizer",
+      "labels": ["type:feature", "priority:high", "sprint:5"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 5",
+      "estimate": "1d",
+      "status": "open",
+      "sprint": "Sprint 5",
+      "meta": {
+        "task_id": "CCO-519",
+        "component": "monitoring",
+        "created_from": "chatgpt"
+      }
+    },
+    {
+      "title": "Tag Compliance Reporting & Owner Remediation Workflow",
+      "body": "Create reporting for tag compliance and remediation workflow for owners.\n\n**Acceptance Criteria:**\n- Daily compliance report summarizing missing/invalid tags per owner/team.\n- Owners receive remediation instructions and have a window to fix before escalation.\n- Compliance metrics exposed on dashboard.",
+      "repo": "cloud-cost-optimizer",
+      "labels": ["type:feature", "priority:medium", "sprint:5"],
+      "assignees": ["abhisheksinghautomotive"],
+      "milestone": "Sprint 5",
+      "estimate": "1d",
+      "status": "open",
+      "sprint": "Sprint 5",
+      "meta": {
+        "task_id": "CCO-520",
+        "component": "automation",
+        "created_from": "chatgpt"
+      }
+    }
+  ]
+}
